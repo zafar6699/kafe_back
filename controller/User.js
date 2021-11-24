@@ -1,14 +1,31 @@
 const User = require("../model/User");
+const Waiter = require("../model/Waiter");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-exports.create = async (req, res, next) => {
+exports.create = async(req, res, next) => {
     const salt = await bcrypt.genSaltSync(12);
     const password = await bcrypt.hashSync(req.body.password, salt);
 
     const user = new User(req.body);
     user.password = password;
     user.save()
-        .then(() => {
+        .then(async() => {
+            if (user.role == "waiter") {
+                const lastDat = await Waiter.findOne()
+                    .sort({ createdAt: -1 })
+                    .exec();
+                const num = lastDat ? lastDat.number + 1 : 1;
+                const waiter = new Waiter({
+                    user: user._id,
+                    number: num,
+                });
+                waiter
+                    .save()
+                    .then(console.log(true))
+                    .catch((e) => {
+                        console.log(e);
+                    });
+            }
             return res.status(200).json({ success: true });
         })
         .catch((err) => {
@@ -16,7 +33,7 @@ exports.create = async (req, res, next) => {
         });
 };
 
-exports.login = async (req, res, next) => {
+exports.login = async(req, res, next) => {
     await User.findOne({ login: req.body.login }).exec((err, data) => {
         if (err) return res.status(400).json({ success: false, err });
         if (!data)
@@ -37,7 +54,7 @@ exports.login = async (req, res, next) => {
     });
 };
 
-exports.getAll = async (req, res, next) => {
+exports.getAll = async(req, res, next) => {
     await User.find()
         .sort({ createdAt: -1 })
         .exec((err, data) => {
@@ -46,23 +63,19 @@ exports.getAll = async (req, res, next) => {
         });
 };
 
-exports.getOne = async (req, res, next) => {
+exports.getOne = async(req, res, next) => {
     const result = await User.findById(req.params.id);
     res.status(200).json({ success: true, data: result });
 };
 
-exports.updateOne = async (req, res, next) => {
-    await User.updateOne(
-        { _id: req.params.id },
-        { $set: req.body },
-        { new: true }
-    ).exec((err, data) => {
+exports.updateOne = async(req, res, next) => {
+    await User.updateOne({ _id: req.params.id }, { $set: req.body }, { new: true }).exec((err, data) => {
         if (err) return res.status(400).json({ success: false, err });
         return res.status(200).json({ success: true, data });
     });
 };
 
-exports.me = async (req, res) => {
+exports.me = async(req, res) => {
     const token = req.headers.authorization;
 
     console.log("token--->", token);
@@ -76,7 +89,7 @@ exports.me = async (req, res) => {
     });
 };
 
-exports.deleteOne = async (req, res, next) => {
+exports.deleteOne = async(req, res, next) => {
     await User.deleteOne({ _id: req.params.id }).exec((err, data) => {
         if (err) return res.status(400).json({ success: false, err });
         return res.status(200).json({ success: true, data });

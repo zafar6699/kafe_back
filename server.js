@@ -23,12 +23,14 @@ app.use(
 
 // Routes
 app.use("/api/auth", require("./routes/User"));
+app.use("/api/category", require("./routes/category"));
+app.use("/api/table", require("./routes/table"));
 app.use("/api/product", require("./routes/product"));
 app.use("/api/order", require("./routes/order"));
 app.use("/api/dashboard", require("./routes/dashboard"));
 app.use("/api/statistic", require("./routes/statistic"));
 require("./config/logging")();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 4040;
 const DB_URI = process.env.DB_URI;
 
 // App & MongoDB Connections
