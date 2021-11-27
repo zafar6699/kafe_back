@@ -6,9 +6,6 @@ const ProductSchema = new mongoose.Schema({
         ref: "Category",
         required: true,
     },
-    code: {
-        type: String,
-    },
     price: {
         type: Number,
         required: true,

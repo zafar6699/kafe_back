@@ -7,7 +7,7 @@ const OrderSchema = new mongoose.Schema({
         perPrice: { type: Number, required: true },
         price: { type: Number, required: true },
         count: { type: Number, required: true },
-    }, ],
+    },],
     price: { type: Number, trim: true, min: 0, required: true },
     priceSale: { type: Number, trim: true, min: 0, required: true },
     payType: { type: Number, enum: [1, 2, 3, 4], required: true },

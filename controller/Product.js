@@ -9,7 +9,6 @@ exports.create = (req, res) => {
         .catch((err) => {
             res.status(400).json({ success: false, err });
         });
-    console.log();
 };
 exports.getAll = async(req, res) => {
     const page = parseInt(req.body.page);
