@@ -83,9 +83,14 @@ exports.me = async(req, res) => {
     const candidate = await User.findOne({ _id: user.id }).select({
         password: 0,
     });
+    let waiter = null;
+    if (candidate.role == "waiter") {
+        waiter = await Waiter.findOne({ user: candidate._id });
+    }
     res.status(200).json({
         success: true,
         data: candidate,
+        waiter,
     });
 };
 
