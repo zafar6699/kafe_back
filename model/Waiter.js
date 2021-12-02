@@ -10,6 +10,10 @@ const WaiterSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    balance: {
+        type: Number,
+        default: 0,
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Waiter", WaiterSchema);

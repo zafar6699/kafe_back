@@ -6,13 +6,17 @@ const ProductSchema = new mongoose.Schema({
         ref: "Category",
         required: true,
     },
+    count: {
+        type: Number,
+        default: 0,
+    },
     price: {
         type: Number,
-        required: true,
+        default: 0,
     },
     status: {
         type: Boolean,
-        required: true,
+        default: true,
     },
 }, { timestamps: true });
 

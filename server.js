@@ -24,8 +24,10 @@ app.use(
 // Routes
 app.use("/api/auth", require("./routes/User"));
 app.use("/api/category", require("./routes/category"));
+app.use("/api/waiter", require("./routes/waiter"));
 app.use("/api/table", require("./routes/table"));
 app.use("/api/product", require("./routes/product"));
+app.use("/api/prixod", require("./routes/prixod"));
 app.use("/api/order", require("./routes/order"));
 app.use("/api/dashboard", require("./routes/dashboard"));
 app.use("/api/statistic", require("./routes/statistic"));

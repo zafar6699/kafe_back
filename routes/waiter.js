@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Order = require("../controller/Order");
+const Waiter = require("../controller/Waiter");
 const { protect, authorize } = require("../middleware/auth");
 
-router.post("/create", Order.create);
-router.get("/now/:id", Order.getNow);
-router.get("/all", Order.getAll);
+router.get("/all", Waiter.getAll);
 
 module.exports = router;

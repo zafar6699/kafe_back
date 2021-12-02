@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const TableSchema = new mongoose.Schema({
+const shtrafSchema = new mongoose.Schema({
     number: { type: String, trim: true, required: true },
     waiter: {
         type: mongoose.Schema.Types.ObjectId,
@@ -16,4 +16,4 @@ const TableSchema = new mongoose.Schema({
         default: false,
     },
 }, { timestamps: true });
-module.exports = mongoose.model("Table", TableSchema);
+module.exports = mongoose.model("shtraf", shtrafSchema);
