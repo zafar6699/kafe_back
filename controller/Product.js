@@ -48,8 +48,10 @@ exports.getOne = async(req, res) => {
 };
 
 exports.getByCategory = async(req, res) => {
-    await Product.find({ category: req.params.id }).exec((err, data) => {
-        if (err) return res.status(400).json({ success: false, err });
-        return res.status(200).json({ success: true, data });
-    });
+    await Product.find({ category: req.params.id, count: { $gte: 0 } }).exec(
+        (err, data) => {
+            if (err) return res.status(400).json({ success: false, err });
+            return res.status(200).json({ success: true, data });
+        }
+    );
 };
