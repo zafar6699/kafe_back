@@ -44,21 +44,13 @@ exports.editOne = async(req, res) => {
         res.status(200).json({ success: true, data });
     });
 };
-exports.deleteOne = async(req, res) => {
-    await Table.updateOne({ _id: req.params.id },
 
-        { $pull: { products: { _id: req.body.product } } }, { new: true }
-    ).exec((err, data) => {
-        if (err) return res.status(400).json({ success: false, err });
-        res.status(200).json({ success: true, data });
-    });
-};
 exports.getAll = async(req, res) => {
     const table = await Table.find();
     res.status(200).json({ success: true, data: table });
 };
 exports.getForApp = async(req, res) => {
-    const table = await Table.find({ waiter: null });
+    const table = await Table.find({ isBusy: false });
     res.status(200).json({ success: true, data: table });
 };
 exports.getOne = async(req, res) => {

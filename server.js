@@ -4,6 +4,24 @@ require("dotenv").config();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const compression = require("compression");
+const Order = require("./model/Order");
+const http = require("http").createServer(app);
+const io = require("socket.io")(http, {
+    cors: { origin: "*" },
+});
+
+io.on("connection", function(socket) {
+    socket.on("orders", async() => {
+        await Order.find({ status: 1 })
+            .sort({ createdAt: -1 })
+            .populate(["waiter", "table"])
+            .exec((err, data) => {
+                if (err) return res.status(400).json({ success: false, err });
+                io.emit("order", data);
+            });
+    });
+});
+
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -32,9 +50,12 @@ app.use("/api/order", require("./routes/order"));
 app.use("/api/dashboard", require("./routes/dashboard"));
 app.use("/api/statistic", require("./routes/statistic"));
 require("./config/logging")();
-const port = process.env.PORT || 4040;
+const PORT = process.env.PORT || 4040;
 const DB_URI = process.env.DB_URI;
 
+http.listen(PORT, () => {
+    console.log(`Connected to port ${PORT}`);
+});
 // App & MongoDB Connections
 mongoose
     .connect(DB_URI, {
@@ -43,8 +64,5 @@ mongoose
         useFindAndModify: false,
         useCreateIndex: true,
     })
-    .then(() => {
-        app.listen(port, () => {
-            console.log("server and DB running");
-        });
-    });
+    .then(() => console.log("Baza ulandi..."))
+    .catch((error) => console.log("Bazaga ulanishda xatolik.\n", error));
