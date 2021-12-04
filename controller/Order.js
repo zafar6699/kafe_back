@@ -46,7 +46,11 @@ exports.getNow = async(req, res) => {
 exports.getKassaNow = async(req, res) => {
     await Order.find({ status: 1 })
         .sort({ createdAt: -1 })
-        .populate(["waiter", "table"])
+        .populate([{
+            path: "waiter",
+            populate: { path: "user" },
+        }, ])
+        .populate("table")
         .exec((err, data) => {
             if (err) return res.status(400).json({ success: false, err });
             return res.status(200).json({ success: true, data });

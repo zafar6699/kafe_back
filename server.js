@@ -7,19 +7,12 @@ const compression = require("compression");
 const Order = require("./model/Order");
 const http = require("http").createServer(app);
 const io = require("socket.io")(http, {
-    cors: { origin: "*" },
-});
-
-io.on("connection", function(socket) {
-    socket.on("orders", async() => {
-        await Order.find({ status: 1 })
-            .sort({ createdAt: -1 })
-            .populate(["waiter", "table"])
-            .exec((err, data) => {
-                if (err) return res.status(400).json({ success: false, err });
-                io.emit("order", data);
-            });
-    });
+    cors: {
+        origin: "http://localhost:4000",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true,
+    },
 });
 
 app.use(express.json());
@@ -50,8 +43,20 @@ app.use("/api/order", require("./routes/order"));
 app.use("/api/dashboard", require("./routes/dashboard"));
 app.use("/api/statistic", require("./routes/statistic"));
 require("./config/logging")();
-const PORT = process.env.PORT || 4040;
+const PORT = process.env.PORT || 80;
 const DB_URI = process.env.DB_URI;
+
+io.on("connection", function(socket) {
+    console.log("socket");
+
+    socket.on("orders", async() => {
+        const data = await Order.find({ status: 1 })
+            .sort({ createdAt: -1 })
+            .populate(["waiter", "table"]);
+
+        io.emit("data", data);
+    });
+});
 
 http.listen(PORT, () => {
     console.log(`Connected to port ${PORT}`);
